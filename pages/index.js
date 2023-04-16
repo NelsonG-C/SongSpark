@@ -1,100 +1,78 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { useState } from 'react';
-import buildspaceLogo from '../assets/buildspace-logo.png';
-
-
+import Head from "next/head";
+import Image from "next/image";
+import { useState } from "react";
+import sparks from "../assets/sparks.png";
 
 const Home = () => {
-  const [userMovieInput, setUserMovieInput] = useState('');
-  const [userOneLineInput, setUserOneLineInput] = useState('');
-  const [userRecommendationInput, setUserRecommendationInput] = useState('');
+  const [apiOutput, setApiOutput] = useState([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const [apiOutput, setApiOutput] = useState('')
-const [isGenerating, setIsGenerating] = useState(false)
+  const callGenerateEndpoint = async () => {
+    setIsGenerating(true);
 
-const callGenerateEndpoint = async () => {
-  setIsGenerating(true);
-  
-  console.log("Calling OpenAI...")
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      movie: userMovieInput,
-      oneLine: userOneLineInput,
-      recommendation: userRecommendationInput
-    }),
-  });
+    console.log("Calling OpenAI...");
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
 
-  const data = await response.json();
-  const { output } = data;
-  console.log("OpenAI replied...", output.text)
+    const data = await response.json();
+    const { output } = data;
+    console.log("output", output);
+    const textArray = output.text.split("\n");
+    console.log("textArray", textArray);
+    console.log("OpenAI replied...", output.text);
 
-  setApiOutput(`${output.text}`);
-  setIsGenerating(false);
-}
-
-  const onUserChangedText = (event, stateFunction) => {
-    console.log(event.target.value);
-    stateFunction(event.target.value);
+    setApiOutput(textArray);
+    setIsGenerating(false);
   };
 
   return (
     <div className="root">
-      <div className="container">
-        <div className="header">
-          <div className="header-title">
-            <h1>Generate Your Letterboxd movie review</h1>
-          </div>
-          <div className="header-subtitle">
-            <h2>Write a quick sentence explaining what movie you watched, your one line verdict, and if you would recommend the film</h2>
-          </div>
+      <div className="app">
+        <div className="flex justify-center">
+          <h1 className="font-bold mr-3">SongSpark</h1>
+          <Image src={sparks} alt="Logo" className="logo" />
         </div>
-        <div className="prompt-container">
-          <input placeholder="The movie name" className="prompt-box"  value={userMovieInput} onChange={(e) => onUserChangedText(e, setUserMovieInput)}/>
-        </div>
-        <div className="prompt-container">
-          <input placeholder="Your one line review" className="prompt-box"  value={userOneLineInput} onChange={(e) => onUserChangedText(e, setUserOneLineInput)}/>
-        </div>
-        <div className="prompt-container">
-          <input placeholder="Do you recommend?" className="prompt-box"  value={userRecommendationInput} onChange={(e) => onUserChangedText(e, setUserRecommendationInput)}/>
+        <div className="flex flex-col justify-center items-center mt-3">
+          <h2 className="font-bold">Song Idea Generator</h2>
+          <h3 className="">
+            Generate a prompt to use as inspiration for your next song
+          </h3>
         </div>
       </div>
-      <div className="prompt-buttons">
+      <div className="flex prompt-buttons justify-center mt-3">
         <a
-          className={isGenerating ? 'generate-button loading' : 'generate-button'}
+          className={
+            isGenerating ? "generate-button loading" : "generate-button"
+          }
           onClick={callGenerateEndpoint}
         >
-          <div className="generate">
-          {isGenerating ? <span className="loader"></span> : <p>Generate</p>}
+          <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700  ">
+            {isGenerating ? <span className="loader"></span> : <p>Generate</p>}
           </div>
         </a>
-      </div> 
+      </div>
       {apiOutput && (
-        <div className="output">
-          <div className="output-header-container">
-            <div className="output-header">
-              <h3>Output</h3>
-            </div>
-          </div>
-          <div className="output-content">
-            <p>{apiOutput}</p>
+        <div className="output flex justify-center">
+          <div className="output-header-container"></div>
+          <div className="output-content flex flex-col">
+            {apiOutput.map((item, index) => {
+              <p>{item}</p>;
+            })}
           </div>
         </div>
       )}
-      <div className="badge-container grow">
+      <div className="flex prompt-buttons justify-center mt-3">
         <a
-          href="https://buildspace.so/builds/ai-writer"
+          className="btn btn-primary"
+          href="https://airtable.com/shrTenIx1eiMT0UCB"
           target="_blank"
-          rel="noreferrer"
         >
-          <div className="badge">
-            <Image src={buildspaceLogo} alt="buildspace logo" />
-            <p>build with buildspace</p>
-          </div>
+          <div className="feedback">Give Feedback</div>
         </a>
       </div>
     </div>

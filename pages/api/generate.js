@@ -1,34 +1,37 @@
-import { Configuration, OpenAIApi } from 'openai';
+import { Configuration, OpenAIApi } from "openai";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
 const generateFullPrompt = (req) => {
-    const { movie, oneLine, recommendation } = req.body;
-    return `Write me a detailed movie review using the following details. Include a synopsis background of the film that does not contain any spoilers. Use the one line verdict as the basis for the tone of the review.
-    Movie Name: ${movie}.
-    One line review of the film: ${oneLine}.
-    Would you recommend?: ${recommendation}.`
-  };
+  return `
+  Generate a prompt to help me make a song idea. Please give me a recommendation for each of the following items, and make the recommendation based off the guideline provided for each category, if there is any guideline provided.
+  Category: Music Genre, Guideline: Must be music that can be created using either music production techniques, a guitar, or a piano.
+  Category: Mood, Guideline: Provide an emotional descriptive word that an 10 year old could understand
+  Category: Key , Guideline: The key must provide a letter, and either major or minor, and it must match the mood that is suggested.
+  Category: Tempo, Guideline: It must be a tempo that is common for the specified genre, nothing under 50 bpm and nothing over 170bpm.
+  Category: Inspiration Question, Guideline: Create a thought provoking question related to the things people write music about.
+  
+  Category: Reference Track, Guideline: Use the exact key, music genre and tempo to provide me with the name of a song and the artist.
+  `;
+};
 
 const openai = new OpenAIApi(configuration);
 
 const generateAction = async (req, res) => {
-    console.log('req', req.body)
-    const prompt = generateFullPrompt(req)
+  console.log("req", req.body);
+  const prompt = generateFullPrompt(req);
   // Run first prompt
-  console.log(`API: ${prompt}`)
+  console.log(`API: ${prompt}`);
 
   const baseCompletion = await openai.createCompletion({
-    model: 'text-davinci-003',
+    model: "text-davinci-003",
     prompt: JSON.stringify(prompt),
     temperature: 0.7,
     max_tokens: 250,
   });
 
-  baseCompletion + extraInformation
-  
   const basePromptOutput = baseCompletion.data.choices.pop();
 
   res.status(200).json({ output: basePromptOutput });
