@@ -3,8 +3,21 @@ import Image from "next/image";
 import { useState } from "react";
 import sparks from "../assets/sparks.png";
 
+const TextArrayComponent = ({ text }) => {
+  // Split the text into an array at "\n"
+  const textArray = text.split("\n");
+
+  return (
+    <div>
+      {textArray.map((item, index) => (
+        <p key={index}>{item}</p>
+      ))}
+    </div>
+  );
+};
+
 const Home = () => {
-  const [apiOutput, setApiOutput] = useState([]);
+  const [apiOutput, setApiOutput] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const callGenerateEndpoint = async () => {
@@ -21,12 +34,9 @@ const Home = () => {
 
     const data = await response.json();
     const { output } = data;
-    console.log("output", output);
-    const textArray = output.text.split("\n");
-    console.log("textArray", textArray);
     console.log("OpenAI replied...", output.text);
 
-    setApiOutput(textArray);
+    setApiOutput(output.text);
     setIsGenerating(false);
   };
 
@@ -59,11 +69,7 @@ const Home = () => {
       {apiOutput && (
         <div className="output flex justify-center">
           <div className="output-header-container"></div>
-          <div className="output-content flex flex-col">
-            {apiOutput.map((item, index) => {
-              <p>{item}</p>;
-            })}
-          </div>
+          <TextArrayComponent text={apiOutput}></TextArrayComponent>
         </div>
       )}
       <div className="flex prompt-buttons justify-center mt-3">

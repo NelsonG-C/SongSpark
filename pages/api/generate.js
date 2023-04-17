@@ -6,7 +6,7 @@ const configuration = new Configuration({
 
 const generateFullPrompt = (req) => {
   return `
-  Generate a prompt to help me make a song idea. Please give me a recommendation for each of the following items, and make the recommendation based off the guideline provided for each category, if there is any guideline provided.
+  Generate a prompt to help me make a song idea. Please give me a recommendation for each of the following items, and make the recommendation based off the guideline provided for each category, if there is any guideline provided.  Format the response so that it is listed as separate lines, with Category Name followed by the answer, no other words each line.
   Category: Music Genre, Guideline: Must be music that can be created using either music production techniques, a guitar, or a piano.
   Category: Mood, Guideline: Provide an emotional descriptive word that an 10 year old could understand
   Category: Key , Guideline: The key must provide a letter, and either major or minor, and it must match the mood that is suggested.
