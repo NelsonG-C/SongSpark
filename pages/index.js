@@ -3,25 +3,26 @@ import Image from "next/image";
 import { useState } from "react";
 import sparks from "../assets/sparks.png";
 
-const TextArrayComponent = ({ text }) => {
-  // Split the text into an array at "\n"
-  const textArray = text.split("\n");
-
-  return (
-    <div>
-      {textArray.map((item, index) => (
-        <p key={index}>{item}</p>
-      ))}
-    </div>
-  );
-};
+import SongIdeaCard from "./components/SongIdeaCard";
 
 const Home = () => {
   const [apiOutput, setApiOutput] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const callGenerateEndpoint = async () => {
+    console.log("ao", apiOutput);
     setIsGenerating(true);
+
+    const spotifyCall = await fetch("/api/spotify", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const spotifyRecommendations = await spotifyCall.json();
+
+    console.log("top tracks", spotifyRecommendations);
 
     console.log("Calling OpenAI...");
     const response = await fetch("/api/generate", {
@@ -29,14 +30,16 @@ const Home = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: null,
     });
 
     const data = await response.json();
-    const { output } = data;
-    console.log("OpenAI replied...", output.text);
+    console.log("data", data);
+    const result = data.output.text;
+    console.log("OpenAI replied...", typeof result);
 
-    setApiOutput(output.text);
+    setApiOutput(result);
+    console.log("api", result);
     setIsGenerating(false);
   };
 
@@ -66,12 +69,7 @@ const Home = () => {
           </div>
         </a>
       </div>
-      {apiOutput && (
-        <div className="output flex justify-center">
-          <div className="output-header-container"></div>
-          <TextArrayComponent text={apiOutput}></TextArrayComponent>
-        </div>
-      )}
+      {apiOutput !== null && <SongIdeaCard text={apiOutput} />}
       <div className="flex prompt-buttons justify-center mt-3">
         <a
           className="btn btn-primary"
