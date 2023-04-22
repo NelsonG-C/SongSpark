@@ -4,25 +4,20 @@ import { useState } from "react";
 import sparks from "../assets/sparks.png";
 
 import SongIdeaCard from "./components/SongIdeaCard";
+import SpotifyRecommendationCard from "./components/SpotifyRecommendationCard";
 
 const Home = () => {
   const [apiOutput, setApiOutput] = useState(null);
+  const [spotifyRecommendations, setSpotifyRecommendations] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const clickGenerateButton = async () => {
+    await callGenerateEndpoint();
+    await getSpotifyRecommendations();
+  };
+
   const callGenerateEndpoint = async () => {
-    console.log("ao", apiOutput);
     setIsGenerating(true);
-
-    const spotifyCall = await fetch("/api/spotify", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const spotifyRecommendations = await spotifyCall.json();
-
-    console.log("top tracks", spotifyRecommendations);
 
     console.log("Calling OpenAI...");
     const response = await fetch("/api/generate", {
@@ -41,6 +36,22 @@ const Home = () => {
     setApiOutput(result);
     console.log("api", result);
     setIsGenerating(false);
+  };
+
+  const getSpotifyRecommendations = async () => {
+    const spotifyCall = await fetch("/api/spotify/recommendations", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const spotifyRecommendations = await spotifyCall.json();
+    console.log("top tracks", spotifyRecommendations);
+    const external_urls = spotifyRecommendations.output.tracks.map(
+      (track) => track.external_urls.spotify
+    );
+    setSpotifyRecommendations(external_urls);
   };
 
   return (
@@ -62,7 +73,7 @@ const Home = () => {
           className={
             isGenerating ? "generate-button loading" : "generate-button"
           }
-          onClick={callGenerateEndpoint}
+          onClick={clickGenerateButton}
         >
           <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700  ">
             {isGenerating ? <span className="loader"></span> : <p>Generate</p>}
@@ -70,6 +81,9 @@ const Home = () => {
         </a>
       </div>
       {apiOutput !== null && <SongIdeaCard text={apiOutput} />}
+      {apiOutput !== null && (
+        <SpotifyRecommendationCard text={spotifyRecommendations} />
+      )}
       <div className="flex prompt-buttons justify-center mt-3">
         <a
           className="btn btn-primary"

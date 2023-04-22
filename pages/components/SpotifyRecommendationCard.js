@@ -2,20 +2,7 @@ import Image from "next/image";
 import sparks from "../../assets/sparks.png";
 import { Spotify } from "react-spotify-embed";
 
-const TextArrayComponent = ({ text }) => {
-  console.log("text", text);
-  // Split the text into an array at "\n"
-  const textArray = text.split("\n");
-  return (
-    <div>
-      {textArray.map((item, index) => (
-        <p key={index}>{item}</p>
-      ))}
-    </div>
-  );
-};
-
-const SongIdeaCard = ({ text }) => {
+const SpotifyRecommendationCard = ({ text }) => {
   return (
     <div>
       <a
@@ -31,11 +18,10 @@ const SongIdeaCard = ({ text }) => {
           <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             Your New Song Inspiration
           </h5>
-          <TextArrayComponent text={text}></TextArrayComponent>
-          <Spotify
-            wide
-            link="https://open.spotify.com/track/5ihDGnhQgMA0F0tk9fNLlA?si=4472348a63dd4f83"
-          />
+          {text &&
+            text.map((item, index) => {
+              return <Spotify wide link={item} />;
+            })}
         </div>
       </a>
 
@@ -46,4 +32,4 @@ const SongIdeaCard = ({ text }) => {
   );
 };
 
-export default SongIdeaCard;
+export default SpotifyRecommendationCard;

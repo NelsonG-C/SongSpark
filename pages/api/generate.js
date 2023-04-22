@@ -21,18 +21,26 @@ const openai = new OpenAIApi(configuration);
 
 const generateAction = async (req, res) => {
   console.log("req", req.body);
-  const prompt = generateFullPrompt(req);
-  // Run first prompt
-  console.log(`API: ${prompt}`);
-
-  const baseCompletion = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: JSON.stringify(prompt),
-    temperature: 0.7,
-    max_tokens: 250,
+  const basePromptOutput = await Promise.resolve({
+    text: `Music Genre: Pop
+    Mood: Sad
+    Key: C Minor
+    Tempo: 80 bpm
+    Inspiration Question: What is the hardest thing about being in a relationship?
+    Reference Track: "Someone Like You" by Adele`,
   });
+  // const prompt = generateFullPrompt(req);
+  // // Run first prompt
+  // console.log(`API: ${prompt}`);
 
-  const basePromptOutput = baseCompletion.data.choices.pop();
+  // const baseCompletion = await openai.createCompletion({
+  //   model: "text-davinci-003",
+  //   prompt: JSON.stringify(prompt),
+  //   temperature: 0.7,
+  //   max_tokens: 250,
+  // });
+
+  // const basePromptOutput = baseCompletion.data.choices.pop();
 
   res.status(200).json({ output: basePromptOutput });
 };
