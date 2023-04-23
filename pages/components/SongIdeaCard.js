@@ -15,7 +15,7 @@ const TextArrayComponent = ({ text }) => {
   );
 };
 
-const SongIdeaCard = ({ text }) => {
+const SongIdeaCard = ({ text, referenceTrack }) => {
   return (
     <div>
       <a
@@ -32,10 +32,7 @@ const SongIdeaCard = ({ text }) => {
             Your New Song Inspiration
           </h5>
           <TextArrayComponent text={text}></TextArrayComponent>
-          <Spotify
-            wide
-            link="https://open.spotify.com/track/5ihDGnhQgMA0F0tk9fNLlA?si=4472348a63dd4f83"
-          />
+          <Spotify wide link={referenceTrack} />
         </div>
       </a>
 
