@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import sparks from "../../../assets/sparks.png";
+import sparks from "../../assets/sparks.png";
 
 const Navbar = () => {
   return (

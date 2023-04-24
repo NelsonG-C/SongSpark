@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 
-import SongIdeaCard from "./components/SongIdeaCard";
-import SpotifyRecommendationCard from "./components/SpotifyRecommendationCard";
-import Navbar from "./components/ui/Navbar";
-import SearchBar from "./components/ui/SearchBar";
+import SongIdeaCard from "../components/SongIdeaCard";
+import SpotifyRecommendationCard from "../components/SpotifyRecommendationCard";
+import Navbar from "../components/ui/Navbar";
+import SearchBar from "../components/ui/SearchBar";
 
 const Home = () => {
   const [apiOutput, setApiOutput] = useState(null);

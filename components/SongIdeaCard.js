@@ -1,5 +1,5 @@
 import Image from "next/image";
-import sparks from "../../assets/sparks.png";
+import sparks from "../assets/sparks.png";
 import { Spotify } from "react-spotify-embed";
 
 const TextArrayComponent = ({ text }) => {
