@@ -26,13 +26,9 @@ const SongIdeaCard = ({ text, referenceTrack }) => {
             </h5>
           </div>
 
-          <TextArrayComponent text={text}></TextArrayComponent>
+          {text && <TextArrayComponent text={text}></TextArrayComponent>}
           <Spotify className="mt-2" wide link={referenceTrack} />
         </div>
-      </div>
-
-      <div className="output flex justify-center">
-        <div className="output-header-container"></div>
       </div>
     </div>
   );
