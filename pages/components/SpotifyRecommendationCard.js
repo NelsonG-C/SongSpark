@@ -1,29 +1,45 @@
-import Image from "next/image";
-import sparks from "../../assets/sparks.png";
 import { Spotify } from "react-spotify-embed";
 
-const SpotifyRecommendationCard = ({ text }) => {
+const TextArrayComponent = ({ text }) => {
+  console.log("text", text);
+  // Split the text into an array at "\n"
+  const textArray = text.split("\n");
   return (
     <div>
-      <a
-        href="#"
-        className="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-      >
-        <Image
-          className="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg"
-          src={sparks}
-          alt=""
-        />
+      {textArray.map((item, index) => (
+        <p key={index}>{item}</p>
+      ))}
+    </div>
+  );
+};
+
+const SpotifyRecommendationCard = ({ text, audioDetails, songDetails }) => {
+  return (
+    <div>
+      <div className="bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl">
+        <h3 className="text-xl font-bold m-3">Your Spark</h3>
+        <div className="flex m-3 flex-col leading-normal">
+          <h4 className=" mb-2 font-bold tracking-tight text-gray-900 dark:text-white">
+            Suggestions for your next song based off your search:
+          </h4>
+          <p>
+            Tempo: {audioDetails.tempo} <br />
+          </p>
+          <p>
+            Key: {audioDetails.key} <br />
+          </p>
+          <TextArrayComponent text={songDetails}></TextArrayComponent>
+        </div>
         <div className="flex flex-col justify-between p-4 leading-normal">
-          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Your New Song Inspiration
-          </h5>
+          <h4 className="mb-2 font-bold tracking-tight text-gray-900 dark:text-white">
+            Related suggestions to inspire your own creations:
+          </h4>
           {text &&
             text.map((item, index) => {
-              return <Spotify wide link={item} />;
+              return <Spotify className="mt-2" wide link={item} />;
             })}
         </div>
-      </a>
+      </div>
 
       <div className="output flex justify-center">
         <div className="output-header-container"></div>

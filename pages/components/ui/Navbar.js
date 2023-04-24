@@ -4,16 +4,24 @@ import sparks from "../../../assets/sparks.png";
 
 const Navbar = () => {
   return (
-    <nav class="bg-white border-gray-200 dark:bg-gray-900">
-      <div class="row flex flex-wrap items-center justify-between mx-1 p-4">
-        <div class="flex items-center">
-          <div class="flex items-center mr-4">
-            <Image src={sparks} alt="Logo" className="logo" />
-            <span class="ml-3 self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              SongSpark
-            </span>
-          </div>
-          {/* <div class=" hidden w-full md:block md:w-auto" id="navbar-default">
+    <nav className="bg-white border-gray-200 dark:bg-gray-900">
+      <div className="row flex flex-wrap items-center justify-between mx-1 p-4">
+        <div className="flex items-center mr-4">
+          <Image src={sparks} alt="Logo" className="logo" />
+          <span className="ml-3 self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+            SongSpark
+          </span>
+        </div>
+        <div className="flex prompt-buttons justify-center">
+          <a
+            className="btn btn-primary"
+            href="https://airtable.com/shrTenIx1eiMT0UCB"
+            target="_blank"
+          >
+            <div className="feedback">Give Feedback</div>
+          </a>
+        </div>
+        {/* <div class=" hidden w-full md:block md:w-auto" id="navbar-default">
             <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
               <li>
                 <a
@@ -58,7 +66,6 @@ const Navbar = () => {
               </li>
             </ul>
           </div> */}
-        </div>
         {/* <div>
           <button
             data-collapse-toggle="navbar-default"

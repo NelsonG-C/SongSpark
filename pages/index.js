@@ -3,16 +3,55 @@ import { useState, useEffect } from "react";
 import SongIdeaCard from "./components/SongIdeaCard";
 import SpotifyRecommendationCard from "./components/SpotifyRecommendationCard";
 import Navbar from "./components/ui/Navbar";
+import SearchBar from "./components/ui/SearchBar";
 
 const Home = () => {
   const [apiOutput, setApiOutput] = useState(null);
   const [spotifyRecommendations, setSpotifyRecommendations] = useState(null);
   const [referenceTrack, setReferenceTrack] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [displaySearch, setDisplaySearch] = useState(false);
+  const [songResults, setSongResults] = useState("");
+  const [artistResults, setArtistResults] = useState("");
+  const [searchTrackAudioDetails, setSearchTrackAudioDetails] = useState(null);
+  const [generalSongDetails, setGeneralSongDetails] = useState(null);
+  const [genre, setGenre] = useState(null);
 
   const clickGenerateButton = async () => {
+    setDisplaySearch(false);
+    setSpotifyRecommendations(null);
     await callGenerateEndpoint();
+  };
+
+  const clickSimilarSongsButton = async () => {
+    setDisplaySearch(true);
+  };
+
+  const searchForRecommendations = async () => {
+    setApiOutput(null);
+    await callGenerateEndpoint(true);
+    // await getGenre();
     await getSpotifyRecommendations();
+  };
+
+  // const getGenre = async () => {
+  //   console.log("finding genre", generalSongDetails);
+  //   const regex = /Music Genre:\s*(\w+)/;
+  //   const match = generalSongDetails.match(regex);
+
+  //   if (match) {
+  //     const extractedGenre = match[1];
+  //     setGenre(extractedGenre);
+  //     console.log("genre", extractedGenre);
+  //   }
+  // };
+
+  const handleSongChanged = (event) => {
+    setSongResults(event.target.value);
+  };
+
+  const handleArtistChanged = (event) => {
+    setArtistResults(event.target.value);
   };
 
   useEffect(() => {
@@ -44,35 +83,60 @@ const Home = () => {
     setReferenceTrack(referenceTrackUrl);
   };
 
-  const callGenerateEndpoint = async () => {
+  const callGenerateEndpoint = async (simple) => {
     setIsGenerating(true);
 
     console.log("Calling OpenAI...");
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: null,
-    });
+    const response = await fetch(
+      `/api/generate?simple=${simple}&song=${songResults}&artist=${artistResults}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: null,
+      }
+    );
 
     const data = await response.json();
-    console.log("data", data);
     const result = data.output.text;
-    console.log("OpenAI replied...", typeof result);
 
-    setApiOutput(result);
-    console.log("api", result);
+    if (simple) {
+      setGeneralSongDetails(result);
+    } else {
+      setApiOutput(result);
+      console.log("api", result);
+    }
     setIsGenerating(false);
   };
 
   const getSpotifyRecommendations = async () => {
-    const spotifyCall = await fetch("/api/spotify/recommendations", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const currentSongDetails = await fetch(
+      `/api/spotify/tracks?track=${encodeURIComponent(
+        songResults
+      )}&artist=${encodeURIComponent(artistResults)}&genre=${genre}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const currentSong = await currentSongDetails.json();
+    console.log("current song", currentSong);
+
+    const trackId = currentSong.output.tracks.items[0].id;
+    const artistId = currentSong.output.tracks.items[0].artists[0].id;
+
+    const spotifyCall = await fetch(
+      `/api/spotify/recommendations?track_id=${trackId}&artist_id=${artistId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const spotifyRecommendations = await spotifyCall.json();
     console.log("top tracks", spotifyRecommendations);
@@ -80,48 +144,75 @@ const Home = () => {
       (track) => track.external_urls.spotify
     );
 
+    setSearchTrackAudioDetails(spotifyRecommendations.audioResult);
+    console.log("audio details", searchTrackAudioDetails);
     setSpotifyRecommendations(external_urls);
   };
   return (
-    <div className="bg-gray-100 h-100">
+    <div className="bg-gray-100 h-full">
       <Navbar />
-      <div className="app">
-        <div className="flex flex-col justify-center items-center mt-3">
-          <h2 className="font-bold">Song Idea Generator</h2>
-          <h3 className="">
-            Generate a prompt to use as inspiration for your next song
-          </h3>
-        </div>
-        <div className="flex prompt-buttons justify-center mt-3">
-          <a
-            className={
-              isGenerating ? "generate-button loading" : "generate-button"
-            }
-            onClick={clickGenerateButton}
-          >
-            <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700  ">
-              {isGenerating ? (
-                <span className="loader"></span>
-              ) : (
-                <p>Generate</p>
+      <div className="h-100 app">
+        <div className="flex h-screen">
+          <div className="w-1/2 bg-gray-100 p-8">
+            <div className="flex flex-col mt-3">
+              <h2 className="font-bold mb-2">Spark your next music idea</h2>
+              <h3>
+                SongSpark is a tool that uses AI to guide you with your next
+                song idea. Choose one of the following starting points based on
+                your needs, and let SongSpark do the rest.
+              </h3>
+              <h3 className="mt-3 font-bold">I'm looking for...</h3>
+            </div>
+            <div className="flex prompt-buttons mt-3">
+              <a
+                className={
+                  isGenerating ? "generate-button loading" : "generate-button"
+                }
+                onClick={clickGenerateButton}
+              >
+                <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700  ">
+                  {isGenerating ? (
+                    <span className="loader"></span>
+                  ) : (
+                    <p>A random spark of inspiration</p>
+                  )}
+                </div>
+              </a>
+              <a
+                className={
+                  isGenerating ? "generate-button loading" : "generate-button"
+                }
+                onClick={clickSimilarSongsButton}
+              >
+                <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700  ">
+                  <p>To use a song as a reference</p>
+                </div>
+              </a>
+            </div>
+            <div>
+              {displaySearch && (
+                <SearchBar
+                  artistValue={artistResults}
+                  handleArtistChange={handleArtistChanged}
+                  songValue={songResults}
+                  handleSongChange={handleSongChanged}
+                  handleSearchClicked={searchForRecommendations}
+                />
               )}
             </div>
-          </a>
-        </div>
-        {apiOutput !== null && referenceTrack !== null && (
-          <SongIdeaCard text={apiOutput} referenceTrack={referenceTrack} />
-        )}
-        {apiOutput !== null && (
-          <SpotifyRecommendationCard text={spotifyRecommendations} />
-        )}
-        <div className="flex prompt-buttons justify-center mt-3">
-          <a
-            className="btn btn-primary"
-            href="https://airtable.com/shrTenIx1eiMT0UCB"
-            target="_blank"
-          >
-            <div className="feedback">Give Feedback</div>
-          </a>
+          </div>
+          <div className="w-2/2 bg-gray-100 p-8">
+            {apiOutput !== null && referenceTrack !== null && (
+              <SongIdeaCard text={apiOutput} referenceTrack={referenceTrack} />
+            )}
+            {spotifyRecommendations !== null && generalSongDetails !== null && (
+              <SpotifyRecommendationCard
+                audioDetails={searchTrackAudioDetails}
+                songDetails={generalSongDetails}
+                text={spotifyRecommendations}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -17,30 +17,46 @@ const generateFullPrompt = (req) => {
   `;
 };
 
+const generateSimplePrompt = (songValue, artistValue) => {
+  return `
+  Generate a prompt to help me make a song idea using the following song as reference: ${songValue} by ${artistValue}. Please give me a recommendation for each of the following items, and make the recommendation based off the guideline provided for each category, if there is any guideline provided.  Format the response so that it is listed as separate lines, and each line is the answer.
+  Category: Music Genre, Guideline: Must be one of the genres available in the spotify api seed genres.
+  Category: Mood, Guideline: Provide an emotional descriptive word that an 10 year old could understand
+  Category: Inspiration Question, Guideline: Create a thought provoking question related to the song that was provided as reference.
+  `;
+};
+
 const openai = new OpenAIApi(configuration);
 
 const generateAction = async (req, res) => {
-  console.log("req", req.body);
-  const basePromptOutput = await Promise.resolve({
-    text: `Music Genre: Pop
-    Mood: Sad
-    Key: C Minor
-    Tempo: 80 bpm
-    Inspiration Question: What is the hardest thing about being in a relationship?
-    Reference Track: "Someone Like You" by Adele`,
-  });
-  // const prompt = generateFullPrompt(req);
-  // // Run first prompt
-  // console.log(`API: ${prompt}`);
-
-  // const baseCompletion = await openai.createCompletion({
-  //   model: "text-davinci-003",
-  //   prompt: JSON.stringify(prompt),
-  //   temperature: 0.7,
-  //   max_tokens: 250,
+  let prompt;
+  console.log("req", req.query);
+  // const basePromptOutput = await Promise.resolve({
+  //   text: `Music Genre: Pop
+  //   Mood: Sad
+  //   Key: C Minor
+  //   Tempo: 80 bpm
+  //   Inspiration Question: What is the hardest thing about being in a relationship?
+  //   Reference Track: "Someone Like You" by Adele`,
   // });
 
-  // const basePromptOutput = baseCompletion.data.choices.pop();
+  if (req.query.simple == "true") {
+    console.log("ok");
+    prompt = generateSimplePrompt(req.query.songValue, req.query.artistValue);
+  } else {
+    prompt = generateFullPrompt(req);
+  }
+  // // Run first prompt
+  console.log(`API: ${prompt}`);
+
+  const baseCompletion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: JSON.stringify(prompt),
+    temperature: 0.9,
+    max_tokens: 250,
+  });
+
+  const basePromptOutput = baseCompletion.data.choices.pop();
 
   res.status(200).json({ output: basePromptOutput });
 };
