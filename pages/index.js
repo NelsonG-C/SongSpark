@@ -151,26 +151,28 @@ const Home = () => {
   return (
     <div className="bg-gray-100 h-full">
       <Navbar />
-      <div className="h-100 app">
-        <div className="flex h-screen">
-          <div className="w-1/2 bg-gray-100 p-8">
+      <div className="h-full app">
+        <div className="flex flex-col h-screen md:flex-row">
+          <div className="w-full md:w-1/2 bg-gray-100 p-4 md:p-8">
             <div className="flex flex-col mt-3">
               <h2 className="font-bold mb-2">Spark your next music idea</h2>
-              <h3>
+              <h3 className="text-sm md:text-base">
                 SongSpark is a tool that uses AI to guide you with your next
                 song idea. Choose one of the following starting points based on
                 your needs, and let SongSpark do the rest.
               </h3>
-              <h3 className="mt-3 font-bold">I'm looking for...</h3>
+              <h3 className="mt-3 font-bold text-sm md:text-base">
+                I'm looking for...
+              </h3>
             </div>
-            <div className="flex prompt-buttons mt-3">
+            <div className="flex flex-wrap prompt-buttons mt-3">
               <a
                 className={
                   isGenerating ? "generate-button loading" : "generate-button"
                 }
                 onClick={clickGenerateButton}
               >
-                <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700  ">
+                <div className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 md:mr-4">
                   {isGenerating ? (
                     <span className="loader"></span>
                   ) : (
