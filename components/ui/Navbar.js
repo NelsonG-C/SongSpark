@@ -8,9 +8,9 @@ const Navbar = () => {
       <div className="row flex flex-wrap items-center justify-between mx-1 p-4">
         <div className="flex items-center mr-4">
           <Image src={sparks} alt="Logo" className="logo" />
-          <span className="ml-3 self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+          <h1 className="ml-3 self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
             SongSpark
-          </span>
+          </h1>
         </div>
         <div className="flex prompt-buttons justify-center">
           <a
@@ -18,7 +18,7 @@ const Navbar = () => {
             href="https://airtable.com/shrTenIx1eiMT0UCB"
             target="_blank"
           >
-            <div className="feedback">Give Feedback</div>
+            <div className=" heading-fancy feedback">Give Feedback</div>
           </a>
         </div>
         {/* <div class=" hidden w-full md:block md:w-auto" id="navbar-default">

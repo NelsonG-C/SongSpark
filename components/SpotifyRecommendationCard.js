@@ -17,7 +17,7 @@ const SpotifyRecommendationCard = ({ text, audioDetails, songDetails }) => {
     <div>
       {audioDetails && (
         <div className="bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl">
-          <h3 className="text-xl font-bold m-3">Your Spark</h3>
+          <h3 className="heading-fancy text-xl font-bold m-3">Your Spark</h3>
           <div className="flex m-3 flex-col leading-normal">
             <h4 className=" mb-2 font-bold tracking-tight text-gray-900 dark:text-white">
               Suggestions for your next song based off your search:
@@ -41,9 +41,6 @@ const SpotifyRecommendationCard = ({ text, audioDetails, songDetails }) => {
           </div>
         </div>
       )}
-      <div className="output flex justify-center">
-        <div className="output-header-container"></div>
-      </div>
     </div>
   );
 };

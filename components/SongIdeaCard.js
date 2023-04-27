@@ -21,7 +21,7 @@ const SongIdeaCard = ({ text, referenceTrack }) => {
         <div className="flex flex-col justify-between p-4 leading-normal">
           <div className="flex items-center mb-2">
             <Image className="sublogo" src={sparks} alt="" />
-            <h5 className="ml-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <h5 className="heading-fancy ml-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               Your New Song Inspiration
             </h5>
           </div>

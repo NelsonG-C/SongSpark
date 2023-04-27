@@ -4,6 +4,26 @@ import SongIdeaCard from "../components/SongIdeaCard";
 import SpotifyRecommendationCard from "../components/SpotifyRecommendationCard";
 import Navbar from "../components/ui/Navbar";
 import SearchBar from "../components/ui/SearchBar";
+import Background from "../components/Background";
+
+const RootApp = () => {
+  return (
+    <>
+      <Background />
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Home />
+      </div>
+    </>
+  );
+};
 
 const Home = () => {
   const [apiOutput, setApiOutput] = useState(null);
@@ -149,11 +169,11 @@ const Home = () => {
     setSpotifyRecommendations(external_urls);
   };
   return (
-    <div className="bg-gray-100 h-full">
+    <div className="h-full">
       <Navbar />
       <div className="h-full app">
         <div className="flex flex-col h-screen md:flex-row">
-          <div className="w-full md:w-1/2 bg-gray-100 p-4 md:p-8">
+          <div className="w-full md:w-1/2 p-4 md:p-8">
             <div className="flex flex-col mt-3">
               <h2 className="font-bold mb-2">Spark your next music idea</h2>
               <h3 className="text-sm md:text-base">
@@ -203,7 +223,7 @@ const Home = () => {
               )}
             </div>
           </div>
-          <div className="w-2/2 bg-gray-100 p-8">
+          <div className="w-2/2 p-8">
             {apiOutput !== null && referenceTrack !== null && (
               <SongIdeaCard text={apiOutput} referenceTrack={referenceTrack} />
             )}
@@ -221,4 +241,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default RootApp;
