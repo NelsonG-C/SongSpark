@@ -1,10 +1,12 @@
 import Image from "next/image";
+import { useRef } from "react";
 import sparks from "../assets/sparks.png";
 import { Spotify } from "react-spotify-embed";
+import html2canvas from "html2canvas";
 
 const TextArrayComponent = ({ text }) => {
-  // Split the text into an array at "\n"
-  const textArray = text.split("\n");
+  // Split the text into an array of fields
+  const textArray = text.split(",");
   return (
     <div>
       {textArray.map((item, index) => (

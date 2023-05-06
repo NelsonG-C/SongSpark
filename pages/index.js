@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/ui/Navbar";
+import Footer from "../components/ui/Footer";
 import Background from "../components/Background";
 import FormLandingPage from "../components/form/FormLandingPage";
 import ResultDisplayPage from "../components/sparks/ResultDisplayPage";
@@ -110,8 +111,9 @@ const Home = () => {
   const getReferenceTrack = async () => {
     console.log(apiOutput);
     const referenceTrackMatch = apiOutput.match(
-      /Reference Track: "(.*)" by (.*)/
+      /Reference Track: ?"?(.*?)"? by (.*)/
     );
+    console.log("ref", referenceTrackMatch);
     const spotifyCall = await fetch(
       `/api/spotify/tracks?track=${encodeURIComponent(
         referenceTrackMatch[1]
@@ -159,7 +161,7 @@ const Home = () => {
   }, [apiOutput]);
 
   return (
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <Navbar />
       <div className="h-full app">
         <div className="flex flex-col md:flex-row">
@@ -194,6 +196,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
