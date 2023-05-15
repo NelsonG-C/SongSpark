@@ -32,13 +32,16 @@ const Home = () => {
   const [searchTrackAudioDetails, setSearchTrackAudioDetails] = useState(null);
   const [generalSongDetails, setGeneralSongDetails] = useState(null);
   const [genre, setGenre] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [lyricSearchOutput, setLyricSearchOutput] = useState(null);
 
   const searchForRecommendations = async (songResults, artistResults) => {
+    setIsLoading(true);
     setApiOutput(null);
     await callGenerateEndpoint(false, songResults, artistResults);
     // await getGenre();
     await getSpotifyRecommendations(songResults, artistResults);
+    setIsLoading(false);
   };
 
   const getSpotifyRecommendations = async (songResults, artistResults) => {
@@ -82,6 +85,7 @@ const Home = () => {
 
   const callGenerateEndpoint = async (simple, songResults, artistResults) => {
     setIsGenerating(true);
+    setIsLoading(true);
     console.log("simpl", simple);
     const url = simple
       ? "/api/generate"
@@ -106,6 +110,7 @@ const Home = () => {
       console.log("api", result);
     }
     setIsGenerating(false);
+    setIsLoading(false);
   };
 
   const getReferenceTrack = async () => {
@@ -139,7 +144,7 @@ const Home = () => {
   };
 
   const handleLyricSearch = async (lyrics) => {
-    console.log("Calling OpenAI...");
+    setIsLoading(true);
     const response = await fetch(`/api/openai/lyrics?lyrics=${lyrics}`, {
       method: "POST",
       headers: {
@@ -152,6 +157,7 @@ const Home = () => {
     const result = data.output.text;
 
     setLyricSearchOutput(result);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -184,8 +190,9 @@ const Home = () => {
             />
           </div>
 
-          <div className="w-2/2 p-8">
+          <div className="w-2/2 items-center p-8">
             <ResultDisplayPage
+              loading={isLoading}
               apiOutput={apiOutput}
               spotifyRecommendations={spotifyRecommendations}
               referenceTrack={referenceTrack}

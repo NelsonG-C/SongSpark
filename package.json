@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@amplitude/analytics-browser": "^1.10.3",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@react-three/drei": "^9.66.0",
